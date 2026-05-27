@@ -29,7 +29,7 @@
             overflow-x: hidden;
         }
 
-        /* ستايل شاشة الفيديو الترحيبية */
+        /* شاشة الفيديو الترحيبية ملء الشاشة وبدون أزرار */
         #intro-overlay {
             position: fixed;
             top: 0;
@@ -39,7 +39,6 @@
             background-color: #1a252f;
             z-index: 9999;
             display: flex;
-            flex-direction: column;
             justify-content: center;
             align-items: center;
             transition: opacity 0.8s ease, visibility 0.8s ease;
@@ -47,29 +46,9 @@
 
         #intro-video {
             width: 100%;
-            max-width: 800px;
-            max-height: 80vh;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-            border-radius: 8px;
-            background-color: #000;
-        }
-
-        .skip-btn {
-            margin-top: 20px;
-            background-color: var(--accent-color);
-            color: white;
-            border: none;
-            padding: 10px 25px;
-            font-size: 1rem;
-            font-family: inherit;
-            cursor: pointer;
-            border-radius: 5px;
-            transition: background-color 0.3s;
-            font-weight: 600;
-        }
-
-        .skip-btn:hover {
-            background-color: #a33224;
+            height: 100%;
+            object-fit: cover; /* تجعل الفيديو يملأ شاشة الهاتف بالكامل دون حواف سوداء */
+            background-color: #1a252f;
         }
 
         /* إخفاء المحتوى الرئيسي مؤقتاً لحين انتهاء الفيديو */
@@ -213,18 +192,16 @@
             header h1 { font-size: 2rem; }
             .links-grid { grid-template-columns: 1fr; }
             body { padding-bottom: 100px; }
-            #intro-video { width: 90%; }
         }
     </style>
 </head>
 <body>
 
     <div id="intro-overlay">
-        <video id="intro-video" autoplay muted playsinline>
+        <video id="intro-video" autoplay muted playsinline preload="auto">
             <source src="prh.mp4" type="video/mp4">
-            متصفحك لا يدعم تشغيل الفيديو.
+            <source src="PRH.mp4" type="video/mp4"> متصفحك لا يدعم تشغيل الفيديو.
         </video>
-        <button class="skip-btn" onclick="exitIntro()">تخطي المقدمة ودخول المدونة ←</button>
     </div>
 
     <div id="main-content">
@@ -306,25 +283,36 @@
         const overlay = document.getElementById('intro-overlay');
         const mainContent = document.getElementById('main-content');
 
-        // دالة الخروج من شاشة الفيديو وإظهار الموقع الرئيسي
         function exitIntro() {
             overlay.style.opacity = '0';
             overlay.style.visibility = 'hidden';
             mainContent.style.opacity = '1';
-            
-            // إيقاف الفيديو تماماً بعد الإخفاء لتوفير موارد المتصفح
             video.pause();
         }
 
-        // عند انتهاء تشغيل الفيديو تلقائياً، يتم الانتقال للموقع فوراً
+        // عند انتهاء الفيديو يدخل تلقائياً للمدونة
         video.onended = function() {
             exitIntro();
         };
 
-        // لتجنب مشاكل المتصفحات التي تمنع التشغيل التلقائي أحياناً
+        // احتياط أمان: إذا فشل الفيديو في العمل لأي سبب (صيغة غير مدعومة)، 
+        // سينتقل الموقع تلقائياً للمدونة بعد 4 ثوانٍ بدلاً من بقاء الشاشة سوداء
+        video.onerror = function() {
+            console.log("فشل تحميل الفيديو، جاري الدخول للموقع مباشرة.");
+            exitIntro();
+        };
+
+        setTimeout(function() {
+            // إذا مرت 5 ثوانٍ ولم يعمل الفيديو، يتم فتح المدونة تلقائياً لحماية تجربة المستخدم
+            if(overlay.style.visibility !== 'hidden') {
+                exitIntro();
+            }
+        }, 5000);
+
         window.addEventListener('load', () => {
             video.play().catch(error => {
-                console.log("التشغيل التلقائي للفيديو يحتاج لتفاعل المستخدم أولاً.");
+                // إذا رفض المتصفح التشغيل التلقائي العادي، نقوم بفتح الصفحة منعاً للوقوف على شاشة سوداء
+                exitIntro();
             });
         });
     </script>
