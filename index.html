@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>مدونة رؤية قانونية - المنصات المساعدة</title>
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --accent-color: #c0392b;
+            --bg-color: #f4f6f7;
+            --card-bg: #ffffff;
+            --text-color: #34495e;
+            --text-light: #7f8c8d;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.8;
+            padding-bottom: 80px;
+            overflow-x: hidden;
+        }
+
+        /* ستايل شاشة الفيديو الترحيبية */
+        #intro-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #1a252f;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            transition: opacity 0.8s ease, visibility 0.8s ease;
+        }
+
+        #intro-video {
+            width: 100%;
+            max-width: 800px;
+            max-height: 80vh;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            border-radius: 8px;
+            background-color: #000;
+        }
+
+        .skip-btn {
+            margin-top: 20px;
+            background-color: var(--accent-color);
+            color: white;
+            border: none;
+            padding: 10px 25px;
+            font-size: 1rem;
+            font-family: inherit;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+            font-weight: 600;
+        }
+
+        .skip-btn:hover {
+            background-color: #a33224;
+        }
+
+        /* إخفاء المحتوى الرئيسي مؤقتاً لحين انتهاء الفيديو */
+        #main-content {
+            opacity: 0;
+            transition: opacity 1s ease;
+        }
+
+        /* ستايل الهيدر وباقي الموقع */
+        header {
+            background: linear-gradient(135deg, #1a252f, #2c3e50);
+            color: #ffffff;
+            padding: 40px 20px;
+            text-align: center;
+            border-bottom: 5px solid var(--accent-color);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        header p {
+            font-size: 1.1rem;
+            color: #bdc3c7;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        .section-title {
+            font-size: 1.8rem;
+            color: var(--primary-color);
+            margin-bottom: 25px;
+            border-right: 5px solid var(--accent-color);
+            padding-right: 15px;
+        }
+
+        .links-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-bottom: 50px;
+        }
+
+        .card {
+            background-color: var(--card-bg);
+            border-radius: 8px;
+            padding: 25px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border: 1px solid #e2e8f0;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+
+        .card h3 {
+            color: var(--primary-color);
+            margin-bottom: 12px;
+            font-size: 1.3rem;
+        }
+
+        .card p {
+            color: var(--text-light);
+            font-size: 0.95rem;
+            margin-bottom: 20px;
+            flex-grow: 1;
+        }
+
+        .card a {
+            display: inline-block;
+            background-color: var(--primary-color);
+            color: #ffffff;
+            text-decoration: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            text-align: center;
+            font-weight: 600;
+            transition: background-color 0.2s ease;
+        }
+
+        .card a:hover {
+            background-color: var(--accent-color);
+        }
+
+        .about-section {
+            background-color: #ffffff;
+            border-radius: 8px;
+            padding: 35px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            border-top: 4px solid var(--accent-color);
+            margin-bottom: 40px;
+        }
+
+        .about-text {
+            font-size: 1.1rem;
+            margin-bottom: 20px;
+        }
+
+        .prayers-box {
+            background-color: #fffaf0;
+            border-right: 4px solid #f39c12;
+            padding: 20px;
+            border-radius: 4px;
+            margin-top: 20px;
+        }
+
+        .prayers-box p {
+            font-style: italic;
+            color: #d35400;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        footer {
+            background-color: #1a252f;
+            color: #bdc3c7;
+            text-align: center;
+            padding: 20px;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            font-size: 0.9rem;
+            border-top: 1px solid #2c3e50;
+            z-index: 500;
+        }
+
+        @media (max-width: 768px) {
+            header h1 { font-size: 2rem; }
+            .links-grid { grid-template-columns: 1fr; }
+            body { padding-bottom: 100px; }
+            #intro-video { width: 90%; }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="intro-overlay">
+        <video id="intro-video" autoplay muted playsinline>
+            <source src="prh.mp4" type="video/mp4">
+            متصفحك لا يدعم تشغيل الفيديو.
+        </video>
+        <button class="skip-btn" onclick="exitIntro()">تخطي المقدمة ودخول المدونة ←</button>
+    </div>
+
+    <div id="main-content">
+        <header>
+            <h1>مدونة رؤية قانونية</h1>
+            <p>بوابة الطالب والباحث القانوني نحو التميز الرقمي والمعرفي</p>
+        </header>
+
+        <div class="container">
+            
+            <h2 class="section-title">أدوات ومنصات تهمّك</h2>
+            <div class="links-grid">
+                
+                <div class="card">
+                    <h3>منصة PaperMe</h3>
+                    <p>أداة مخصصة ومميزة لطباعة الأوراق والملفات بكل سهولة ويسر وبشكل احترافي.</p>
+                    <a href="https://paperme.pixzens.com/ar" target="_blank">الانتقال للموقع</a>
+                </div>
+
+                <div class="card">
+                    <h3>تحويل Word إلى PDF</h3>
+                    <p>موقع iLovePDF الأداة الأفضل والموثوقة لتحويل المستندات والوثائق من صيغة Word إلى PDF.</p>
+                    <a href="https://www.ilovepdf.com/ar/word_to_pdf" target="_blank">الانتقال للموقع</a>
+                </div>
+
+                <div class="card">
+                    <h3>تحويل النص إلى صوت بالذكاء الاصطناعي</h3>
+                    <p>مختبر AI Studio من جوجل لتوليد الأصوات بدقة وكفاءة عالية وعبر أحدث التقنيات الرقمية المتاحة.</p>
+                    <a href="https://aistudio.google.com/generate-speech?model=gemini-3.1-flash-tts-preview" target="_blank">الانتقال للموقع</a>
+                </div>
+
+                <div class="card">
+                    <h3>صناعة الفيديوهات بالذكاء الاصطناعي</h3>
+                    <p>أداة Flow المميزة من مختبرات جوجل (Labs.google) لابتكار وإنتاج مقاطع وفيديوهات إبداعية ومميزة.</p>
+                    <a href="https://labs.google/fx/tools/flow" target="_blank">الانتقال للموقع</a>
+                </div>
+
+                <div class="card">
+                    <h3>المجلة الجزائرية للمجلات العلمية (ASJP)</h3>
+                    <p>المرجع العلمي والأكاديمي الشامل والأهم للبحث عن المقالات والدراسات والبحوث القانونية الموثقة.</p>
+                    <a href="https://asjp.cerist.dz/" target="_blank">الانتقال للموقع</a>
+                </div>
+
+                <div class="card">
+                    <h3>تحميل فيديوهات تيك توك</h3>
+                    <p>موقع SaveFrom لتحميل مقاطع الفيديو من منصة تيك توك مباشرة وبدون علامة مائية عن طريق نسخ ولصق الرابط.</p>
+                    <a href="https://ar.savefrom.net/135yM/download-from-tiktok" target="_blank">الانتقال للموقع</a>
+                </div>
+
+                <div class="card">
+                    <h3>تحميل فيديوهات فيسبوك</h3>
+                    <p>أداة مخصصة وسريعة من موقع SaveFrom لحفظ وتحميل مقاطع الفيديو من منصة فيسبوك بجودة عالية.</p>
+                    <a href="https://ar.savefrom.net/9-how-to-download-facebook-video-157kj.html" target="_blank">الانتقال للموقع</a>
+                </div>
+
+            </div>
+
+            <h2 class="section-title" id="about">حول المدونة وصاحبة الموقع</h2>
+            <div class="about-section">
+                <p class="about-text">
+                    مرحباً بكم في <strong>مدونة رؤية قانونية</strong>. أنا طالبة حقوق، محبة للقانون الخاص وشغوفة بالتعمق في تفاصيله، ومهتمة بمناقشة مواضيعه ونشر الوعي الثقافي والقانوني من خلال هذه المنصة المتواضعة.
+                </p>
+                
+                <div class="prayers-box">
+                    <p>✨ يسر الله أمر الطالبة وسدد خطاها وبارك في علمها ووقتها.</p>
+                    <p>🤲 ربِّ ارزق أولادها العلم النافع، والسعي الدؤوب، والسداد في القول والعمل.</p>
+                </div>
+            </div>
+
+        </div>
+
+        <footer>
+            <p>جميع حقوق الطبع محفوظة &copy; مدونة رؤية قانونية</p>
+        </footer>
+    </div>
+
+    <script>
+        const video = document.getElementById('intro-video');
+        const overlay = document.getElementById('intro-overlay');
+        const mainContent = document.getElementById('main-content');
+
+        // دالة الخروج من شاشة الفيديو وإظهار الموقع الرئيسي
+        function exitIntro() {
+            overlay.style.opacity = '0';
+            overlay.style.visibility = 'hidden';
+            mainContent.style.opacity = '1';
+            
+            // إيقاف الفيديو تماماً بعد الإخفاء لتوفير موارد المتصفح
+            video.pause();
+        }
+
+        // عند انتهاء تشغيل الفيديو تلقائياً، يتم الانتقال للموقع فوراً
+        video.onended = function() {
+            exitIntro();
+        };
+
+        // لتجنب مشاكل المتصفحات التي تمنع التشغيل التلقائي أحياناً
+        window.addEventListener('load', () => {
+            video.play().catch(error => {
+                console.log("التشغيل التلقائي للفيديو يحتاج لتفاعل المستخدم أولاً.");
+            });
+        });
+    </script>
+
+</body>
+</html>
